@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Botformed</title>
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0E0E0E">
+<meta name="description" content="Botformed moves science-led companies onto AI and draws the line around the one thing that makes them valuable.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout concept: a black "instrument panel" hero with the gate animation, then calm paper sections for the services,
+   then one deep indigo band for the research programme. Scarlet is the only accent on black; the tier colours
+   (green / amber / scarlet) carry meaning and nothing else. */
+:root{
+  --ink:#0E0E0E; --ink-2:#171717; --ink-3:#242424;
+  --paper:#FAFAF7; --paper-2:#F1F0EB; --line:#DEDCD5;
+  --text:#161616; --muted:#6E6C66; --on-dark:#D2CFC9; --on-dark-muted:#8A8884;
+  --red:#C8382F; --red-soft:#E25A50;
+  --t1:#8A8884; --t1-bg:#F1F0EB; --t2:#A3514A; --t2-bg:#F6E3E1; --t3:#C8382F; --t3-bg:#FBD9D5; --pink:#F6E3E1; --pink-2:#EFC9C4;
+  --q1:#1A0F0E; --q2:#2A1412; --q-glow:#E8A59E;
+  --head:'Oxanium',system-ui,sans-serif; --body:'IBM Plex Sans',system-ui,-apple-system,sans-serif; --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--head);font-weight:600;line-height:1.1;margin:0;text-wrap:balance}
+h2{font-size:clamp(28px,4vw,40px)}
+h3{font-size:20px}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+.lede{font-size:clamp(18px,2.2vw,22px);line-height:1.5;color:var(--muted);max-width:62ch}
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--head);font-weight:600;font-size:15px;letter-spacing:.02em;padding:14px 22px;border-radius:4px;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .15s ease,background .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn-red{background:var(--red);color:#fff}
+.btn-ghost{border-color:var(--on-dark-muted);color:var(--on-dark);background:transparent}
+.btn-dark{background:var(--ink);color:#fff}
+.btn:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(14,14,14,.92);backdrop-filter:blur(8px);border-bottom:1px solid #222}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--ink)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.wordmark{font-family:var(--head);font-weight:300;font-size:26px;color:var(--on-dark);text-decoration:none;letter-spacing:0}
+.wordmark b{font-weight:300;color:var(--red)}
+.nav ul{list-style:none;display:flex;gap:28px;margin:0;padding:0}
+.nav li a{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--on-dark-muted);text-decoration:none}
+.nav li a:hover{color:var(--on-dark)}
+@media (max-width:760px){.nav ul{display:none}}
+
+/* hero */
+.hero{background:var(--ink);color:var(--on-dark);position:relative;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding-block:72px 64px}
+.hero h1{font-size:clamp(38px,5.2vw,64px);font-weight:500;color:#fff;letter-spacing:-.01em}
+.hero h1 em{font-style:normal;color:var(--red-soft)}
+.hero .lede{color:var(--on-dark-muted);margin-top:22px}
+.hero .cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}
+.gate-wrap{position:relative;aspect-ratio:1/1;max-width:100%;border:1px solid #2a2a2a;background:radial-gradient(60% 60% at 50% 50%,#1b1b1b 0%,#0E0E0E 100%)}
+.gate-wrap canvas{display:block;width:100%;height:100%}
+.gate-label{position:absolute;left:14px;bottom:12px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--on-dark-muted)}
+.gate-label i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:8px;vertical-align:middle}
+@media (max-width:860px){.hero .wrap{grid-template-columns:1fr;padding-block:48px}.gate-wrap{max-width:420px}}
+
+/* proof strip */
+.strip{background:var(--ink-2);color:var(--on-dark);border-top:1px solid #222}
+.strip .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.strip .cell{padding:26px 24px 26px 0;border-right:1px solid #2a2a2a;margin-right:24px}
+.strip .cell:last-child{border:0;margin:0}
+.strip .num{font-family:var(--head);font-weight:600;font-size:34px;color:#fff;line-height:1}
+.strip .num span{color:var(--red-soft)}
+.strip .lab{font-size:14px;color:var(--on-dark-muted);margin-top:8px;max-width:30ch}
+@media (max-width:760px){.strip .wrap{grid-template-columns:1fr}.strip .cell{border-right:0;border-bottom:1px solid #2a2a2a;margin:0;padding:20px 0}.strip .cell:last-child{border:0}}
+
+/* sections */
+section.band{padding-block:88px}
+.band-alt{background:var(--paper-2)}
+.sec-head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:48px}
+.sec-head .lede{margin-top:0}
+@media (max-width:860px){.sec-head{grid-template-columns:1fr;gap:16px}}
+
+/* services */
+.ladder{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.svc{background:#fff;border:1px solid var(--line);padding:28px 28px 26px;display:grid;grid-template-rows:auto auto 1fr auto;gap:14px;min-width:0;position:relative}
+.svc:first-child{grid-column:1/-1;grid-template-columns:1.1fr .9fr;grid-template-rows:none;align-items:start;column-gap:40px;background:var(--ink);color:var(--on-dark);border-color:var(--ink)}
+.svc:first-child h3{color:#fff;font-size:28px}
+.svc:first-child p{color:var(--on-dark-muted)}
+.svc:first-child .svc-right{grid-row:1/4;grid-column:2}
+.svc .step{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.svc:first-child .step{color:var(--on-dark-muted)}
+.tier{display:inline-flex;gap:6px;align-items:center}
+.tier i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.tier .a{background:var(--t1)}.tier .b{background:var(--t2)}.tier .c{background:var(--t3)}.tier .off{background:var(--line)}
+.svc:first-child .tier .off{background:#333}
+.svc p{font-size:16px;color:var(--text)}
+.svc .price{font-family:var(--mono);font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+.svc:first-child .price{border-color:#2d2d2d;color:var(--on-dark-muted)}
+.now{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--red);padding:4px 8px;border-radius:2px}
+.svc-right ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.svc-right li{padding-left:18px;position:relative;color:var(--on-dark);font-size:15px}
+.svc-right li::before{content:"";position:absolute;left:0;top:11px;width:8px;height:2px;background:var(--red)}
+@media (max-width:860px){.ladder{grid-template-columns:1fr}.svc:first-child{grid-template-columns:1fr}.svc:first-child .svc-right{grid-row:auto;grid-column:auto}}
+
+/* tiers */
+.tiers{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.tier-stack{display:grid;gap:10px;position:relative}
+.tcard{border-radius:6px;padding:20px 22px;border:1px solid;display:grid;grid-template-columns:1fr auto;gap:4px 16px;align-items:baseline}
+.tcard .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase}
+.tcard .pct{font-family:var(--head);font-weight:600;font-size:22px;grid-row:1/3;align-self:center}
+.tcard .w{font-weight:600;font-size:17px;grid-column:1}
+.tcard .h{font-size:14px;color:var(--muted);grid-column:1/-1}
+.t1c{background:var(--t1-bg);border-color:#D9D6D0}.t1c .k,.t1c .pct{color:var(--t1)}
+.t2c{background:var(--t2-bg);border-color:#EFC9C4}.t2c .k,.t2c .pct{color:var(--t2)}
+.t3c{background:var(--t3-bg);border-color:#E6A39B}.t3c .k,.t3c .pct{color:var(--t3)}
+.wall{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--text)}
+.wall::before,.wall::after{content:"";flex:1;height:3px;background:var(--ink)}
+.wall span{width:30px;height:30px;border-radius:50%;border:2.5px solid var(--red);display:grid;place-items:center}
+.wall span::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--red)}
+.tiers .mcopy p+p{margin-top:14px}
+@media (max-width:860px){.tiers{grid-template-columns:1fr}}
+
+/* research band */
+.research{background:linear-gradient(135deg,#0E0E0E 0%,var(--q1) 55%,var(--q2) 100%);color:#E9E3E1;position:relative;overflow:hidden}
+.research::after{content:"";position:absolute;right:-20%;top:-30%;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(closest-side,rgba(200,56,47,.30),transparent 70%);pointer-events:none}
+.research .eyebrow{color:var(--q-glow)}
+.research .lede{color:#CFC6C3}
+.research h2{color:#fff}
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px;position:relative}
+.rcard{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);padding:22px;border-radius:6px;min-width:0}
+.rcard .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--q-glow);margin-bottom:10px}
+.rcard p{font-size:15px;color:#E4DDDA}
+.rnote{margin-top:28px;font-family:var(--mono);font-size:12px;color:#BFB4B1;max-width:70ch}
+@media (max-width:860px){.rgrid{grid-template-columns:1fr}}
+
+/* principles */
+.prin{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.prin div{border-top:3px solid var(--ink);padding-top:18px}
+.prin h3{font-size:19px;margin-bottom:8px}
+.prin p{font-size:15.5px;color:var(--muted)}
+@media (max-width:760px){.prin{grid-template-columns:1fr}}
+
+/* people */
+.people{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.person{display:grid;grid-template-columns:96px 1fr;gap:20px;align-items:start;background:#fff;border:1px solid var(--line);padding:22px}
+.avatar{width:96px;aspect-ratio:1;background:linear-gradient(160deg,#2a2a2a,#0E0E0E);display:flex;align-items:center;justify-content:center;font-family:var(--head);font-size:30px;color:var(--on-dark)}
+.avatar b{color:var(--red);font-weight:500}
+.person h3{font-size:20px}
+.person .role{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:4px 0 10px}
+.person p{font-size:15px}
+.ph{background:#FFF4D6;color:#7A4B00;font-family:var(--mono);font-size:12px;padding:1px 6px;border-radius:2px}
+@media (max-width:760px){.people{grid-template-columns:1fr}.person{grid-template-columns:72px 1fr}.avatar{width:72px;font-size:24px}}
+
+/* contact */
+.contact{background:var(--ink);color:var(--on-dark)}
+.contact .wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;padding-block:88px}
+.contact h2{color:#fff}
+.contact .lede{color:var(--on-dark-muted)}
+.mail{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:26px}
+.mail code{font-family:var(--mono);font-size:18px;color:#fff;background:#1d1d1d;border:1px solid #2e2e2e;padding:12px 16px;border-radius:4px}
+.copy{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;background:transparent;color:var(--on-dark);border:1px solid #444;padding:12px 14px;border-radius:4px;cursor:pointer}
+.copy:hover{border-color:var(--on-dark)}
+.form{display:grid;gap:12px}
+.form label{display:grid;gap:6px;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--on-dark-muted)}
+.form input,.form textarea,.form select{font:inherit;font-size:16px;color:#fff;background:#141414;border:1px solid #333;padding:12px 14px;border-radius:4px;width:100%}
+.form textarea{min-height:110px;resize:vertical}
+.form .ok{font-family:var(--mono);font-size:13px;color:var(--q-glow)}
+@media (max-width:860px){.contact .wrap{grid-template-columns:1fr;padding-block:56px}}
+
+footer{background:#080808;color:var(--on-dark-muted);font-family:var(--mono);font-size:12px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:26px}
+
+/* appendix: visual language sheet */
+.appendix{border-top:6px solid var(--red)}
+.sw{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.sw div{aspect-ratio:4/3;border:1px solid var(--line);padding:10px;display:flex;flex-direction:column;justify-content:flex-end;font-family:var(--mono);font-size:11px;line-height:1.4}
+.spec{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:36px}
+.spec .box{background:#fff;border:1px solid var(--line);padding:24px}
+.spec .box .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.rules{columns:2;column-gap:40px;font-size:15.5px;margin-top:36px}
+.rules li{break-inside:avoid;margin-bottom:10px}
+@media (max-width:760px){.spec{grid-template-columns:1fr}.rules{columns:1}}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="wordmark" href="#top">b<b>o</b>tformed</a>
+    <ul>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#method">Method</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">AI adoption for companies with sensitive data</p>
+      <h1 style="margin-top:14px">You need AI to stay competitive.<br>You can't afford <em>a leak.</em></h1>
+      <p class="lede">Botformed helps companies adopt AI in stages, safely. We sort your data from benign to crown jewels, put the right AI on each level, and make sure the sensitive part never leaves your control.</p>
+      <div class="cta">
+        <a class="btn btn-red" href="#contact">Talk to us</a>
+        <a class="btn btn-ghost" href="#method">How it works</a>
+      </div>
+    </div>
+    <div class="gate-wrap" aria-label="Animation: data flows freely through the open and internal tiers; at the wall, only requests holding a valid ticket pass into the crown-jewel tier.">
+      <canvas id="gate" width="640" height="640"></canvas>
+      <div class="gate-label"><i></i>Data moving through three levels; only ticketed requests pass the gate</div>
+    </div>
+  </div>
+</header>
+
+<div class="strip">
+  <div class="wrap">
+    <div class="cell"><div class="num">40<span>%</span></div><div class="lab">of workplace AI interactions involve sensitive company data (Cyberhaven, 2026)</div></div>
+    <div class="cell"><div class="num">&lt;2<span>%</span></div><div class="lab">of a typical company's data is truly sensitive. The other 98% can be on AI now.</div></div>
+    <div class="cell"><div class="num">3<span> weeks</span></div><div class="lab">from Samsung lifting its ChatGPT ban in 2023 to its first confidential leaks</div></div>
+  </div>
+</div>
+
+<section class="band" id="services">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><p class="eyebrow">Services</p><h2 style="margin-top:10px">AI in stages. Start where the risk is lowest.</h2></div>
+      <p class="lede">Each stage is a fixed-scope engagement with a deliverable you keep. The squares show which level of your data a stage touches, from benign to crown jewels.</p>
+    </div>
+    <div class="ladder">
+      <article class="svc">
+        <div class="step"><span>Stage 1 · Communications and content</span><span class="tier" title="Touches level 1 only"><i class="a"></i><i class="off"></i><i class="off"></i></span></div>
+        <h3>We produce your communications with AI, so your team does not have to.</h3>
+        <p>Website, investor pages, clinical or technical evidence summaries, newsroom, social, decks, internal documents. Produced with AI, edited by people who understand technical content, delivered weekly. The fastest visible gain, and it touches only public data.</p>
+        <div class="price">Weekly delivery from the first week · monthly retainer</div>
+        <div class="svc-right">
+          <ul>
+            <li>Website pages and banners built and maintained</li>
+            <li>Evidence and literature summaries for non-specialists</li>
+            <li>LinkedIn, X and Instagram, planned and produced</li>
+            <li>Investor and partner materials</li>
+            <li>Internal documents, SOPs, training decks</li>
+          </ul>
+        </div>
+      </article>
+      <article class="svc">
+        <div class="step"><span>Stage 2 · Company-wide adoption</span><span class="tier" title="Touches levels 1 and 2"><i class="a"></i><i class="b"></i><i class="off"></i></span></div>
+        <h3>Move the whole company onto AI, properly.</h3>
+        <p>Which tools, for whom, with what data. An acceptable-use policy people actually follow, approved tools that beat the personal accounts, and training by role. Ends the shadow-AI problem instead of banning it.</p>
+        <div class="price">4 to 8 weeks · fixed fee</div>
+      </article>
+      <article class="svc">
+        <div class="step"><span>Stage 3 · Data audit</span><span class="tier" title="Touches all three levels"><i class="a"></i><i class="b"></i><i class="c"></i></span></div>
+        <h3>Sort your data from benign to crown jewels. Write the rules down.</h3>
+        <p>Two to four weeks with your leadership and the people who hold the sensitive data. The deliverable is the map: every data class on its level, the rules for each, and the one-page diagram your board understands. Done with your technical team, not by a questionnaire.</p>
+        <div class="price">2 to 4 weeks · fixed fee</div>
+      </article>
+      <article class="svc">
+        <div class="step"><span>Stage 4 · Architecture and build</span><span class="tier" title="Touches levels 2 and 3"><i class="off"></i><i class="b"></i><i class="c"></i></span></div>
+        <h3>The private level, the local level, and the gate between them.</h3>
+        <p>Which cloud for the open and internal levels. What machine and which model for the crown jewels, often a single workstation. The gate and the approval chain. Built by named partners; we lead, specify and sign off. We never sell hardware.</p>
+        <div class="price">Scoped after the audit</div>
+      </article>
+      <article class="svc">
+        <div class="step"><span>Stage 5 · Ongoing oversight</span><span class="tier" title="Oversees all three levels"><i class="a"></i><i class="b"></i><i class="c"></i></span></div>
+        <h3>Someone whose job it is to keep it safe.</h3>
+        <p>Policy, vendors, training and board reporting, on a monthly retainer. The relationship that keeps the wall standing as the tools change every quarter.</p>
+        <div class="price">Monthly retainer</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band band-alt" id="method">
+  <div class="wrap">
+    <div class="tiers">
+      <div class="mcopy">
+        <p class="eyebrow">How it works</p>
+        <h2 style="margin:10px 0 22px">One question of every piece of data: if this leaked, what would it cost?</h2>
+        <p>The answers sort everything into three levels, and each level gets the AI it can safely use. Open data goes to the best cloud model on day one. Internal data runs in a private deployment you control, with access by role and a log of everything. The crown jewels live on local hardware with an open-weight model and no cable to the outside.</p>
+        <p>Between the second and third tier is a wall with a single gate. Every request that touches the crown jewels, whether a person, a file or an AI, presents a one-time ticket bound to one purpose and one time window. The gatekeeper says yes or no, spends the ticket, and writes it to a ledger no one can edit.</p>
+        <p style="margin-top:22px"><a class="btn btn-dark" href="#contact">Ask about a data audit</a></p>
+      </div>
+      <div class="tier-stack" aria-label="The three tiers">
+        <div class="tcard t1c"><div class="k">Level 1 · Benign</div><div class="pct">~80%</div><div class="w">Marketing, decks, public papers, templates</div><div class="h">Any cloud AI. Start on day one.</div></div>
+        <div class="tcard t2c"><div class="k">Level 2 · Internal</div><div class="pct">~18%</div><div class="w">Reports, customer lists, supplier terms, process data</div><div class="h">Private deployment. Access by role. Everything logged.</div></div>
+        <div class="wall">the wall <span></span> the gate</div>
+        <div class="tcard t3c"><div class="k">Level 3 · Crown jewels</div><div class="pct">~2%</div><div class="w">The formula. The recipe. The circuit. The failed experiments.</div><div class="h">Local hardware, open-weight model. Nothing leaves without a ticket.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band research" id="research">
+  <div class="wrap">
+    <p class="eyebrow">Research</p>
+    <h2 style="margin-top:10px;max-width:20ch">The quantum gate: a ticket no computer can forge.</h2>
+    <p class="lede" style="margin-top:18px">Our research line asks one question: how do you make the gate's ticket hold for twenty years, through the arrival of quantum computers? Today's answer is built from parts you can buy. Tomorrow's is in the laboratory.</p>
+    <div class="rgrid">
+      <div class="rcard"><div class="k">Today · deployable</div><p>Ticket keys from a quantum random number generator, so no one can predict them. Signatures with ML-DSA, the NIST post-quantum standard of 2024, so no known computer, quantum ones included, can forge them.</p></div>
+      <div class="rcard"><div class="k">Next · in development</div><p>Full post-quantum encryption of the crown-jewel store itself, against "harvest now, decrypt later": the adversary who copies your files today and waits for the machine that opens them.</p></div>
+      <div class="rcard"><div class="k">Horizon · research</div><p>True quantum tokens: physical tickets that cannot be copied at all. Demonstrated over a few kilometres of fibre in 2024. A research project, not a product, and we say so.</p></div>
+    </div>
+    <p class="rnote">We never say "unbreakable". The honest claim is "no known attack", and we write the date next to it.</p>
+  </div>
+</section>
+
+<section class="band" id="promises">
+  <div class="wrap">
+    <p class="eyebrow">Three promises</p>
+    <h2 style="margin:10px 0 40px">Three things we never do.</h2>
+    <div class="prin">
+      <div><h3>We never sell hardware, licences or models.</h3><p>So there is no commission hidden in the recommendation. When a $6,000 workstation will do, we say so.</p></div>
+      <div><h3>We never take your sensitive data off your premises.</h3><p>Crown-jewel work happens in your building, on your machines, under your log.</p></div>
+      <div><h3>We never say "unbreakable".</h3><p>Every security claim comes with the attack it was tested against and the date.</p></div>
+    </div>
+  </div>
+</section>
+
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Work with us</p>
+      <h2 style="margin-top:10px">Tell us where you are.</h2>
+      <p class="lede" style="margin-top:16px">Whether you are just starting with AI or already worried about what your people paste into it, describe the situation in a few lines. We reply within two working days.</p>
+      <div class="mail"><code id="mail">info@botformed.com</code><button class="copy" id="copybtn" type="button">Copy address</button></div>
+      <p style="margin-top:28px;font-family:var(--mono);font-size:12px;color:var(--on-dark-muted);letter-spacing:.08em">BOTFORMED INC. · DELAWARE · BOSTON, MASSACHUSETTS</p>
+    </div>
+    <form class="form" id="f" novalidate>
+      <label>Name *<input id="f-name" type="text" autocomplete="name" required></label>
+      <label>Email *<input id="f-email" type="email" autocomplete="email" required></label>
+      <label>Company<input id="f-co" type="text" autocomplete="organization"></label>
+      <label>Your role<input id="f-role" type="text" autocomplete="organization-title" placeholder="CEO, CTO, head of R&amp;D, operations…"></label>
+      <label>Phone<input id="f-phone" type="tel" autocomplete="tel"></label>
+      <label>How can we help?<textarea id="f-msg" placeholder="A few lines about your situation is enough."></textarea></label>
+      <button class="btn btn-red" type="submit">Send</button>
+      <p class="ok" id="f-ok" hidden>Thank you. We will reply within two working days.</p>
+      <p class="ok" id="f-err" hidden style="color:var(--red-soft)">Please add your name and a valid email address.</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap"><span>© 2026 Botformed Inc.</span><span>info@botformed.com</span><span>Boston, Massachusetts</span></div>
+</footer>
+
+
+<script>
+(function(){
+  // The gate: particles flow left to right through tier 1 and tier 2; at the wall only ticketed ones pass into tier 3.
+  var cv=document.getElementById('gate'), c=cv.getContext('2d'), Wd=cv.width, Hd=cv.height;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var wallX=Wd*0.68, gateY=Hd*0.5, gateR=26;
+  var ps=[]; for(var i=0;i<70;i++) ps.push(spawn(true));
+  function spawn(any){ var ticket=Math.random()<0.16; return {x:any?Math.random()*wallX*0.95:-10, y:40+Math.random()*(Hd-80), vx:0.5+Math.random()*0.9, vy:(Math.random()-0.5)*0.25, r:1.6+Math.random()*1.6, ticket:ticket, state:'flow', t:0}; }
+  function draw(){
+    c.clearRect(0,0,Wd,Hd);
+    // tier zones
+    c.fillStyle='rgba(210,207,201,0.05)'; c.fillRect(0,0,wallX*0.5,Hd);
+    c.fillStyle='rgba(210,207,201,0.09)'; c.fillRect(wallX*0.5,0,wallX*0.5,Hd);
+    c.fillStyle='rgba(200,56,47,0.14)'; c.fillRect(wallX,0,Wd-wallX,Hd);
+    c.font='11px IBM Plex Mono, monospace'; c.fillStyle='#8A8884'; c.textAlign='left';
+    c.fillText('LEVEL 1 · BENIGN',16,24); c.fillText('LEVEL 2 · INTERNAL',wallX*0.5+16,24); c.fillText('LEVEL 3',wallX+14,24);
+    // wall
+    c.fillStyle='#D2CFC9'; c.fillRect(wallX-2,0,4,gateY-gateR-6); c.fillRect(wallX-2,gateY+gateR+6,4,Hd);
+    // gate ring
+    c.beginPath(); c.arc(wallX,gateY,gateR,0,Math.PI*2); c.strokeStyle='#C8382F'; c.lineWidth=3; c.stroke();
+    c.beginPath(); c.arc(wallX,gateY,7,0,Math.PI*2); c.fillStyle='#C8382F'; c.fill();
+    // ledger ticks on the right
+    c.fillStyle='#8A8884'; c.fillText('LEDGER',wallX+14,Hd-18);
+    for(var p=0;p<ps.length;p++){
+      var q=ps[p];
+      if(q.state==='flow'){
+        q.x+=q.vx; q.y+=q.vy; if(q.y<30||q.y>Hd-30) q.vy=-q.vy;
+        if(q.x>wallX*0.5){ q.y+= (gateY-q.y)*0.012; }           // tier 2 funnels toward the gate
+        if(q.x>=wallX-gateR){
+          if(Math.abs(q.y-gateY)<gateR-4 && q.ticket){ q.state='pass'; q.t=0; }
+          else { q.state='bounce'; q.t=0; q.vx=-(0.6+Math.random()*0.6); q.vy=(Math.random()-0.5)*1.2; }
+        }
+      } else if(q.state==='pass'){
+        q.x+=1.4; q.t++; if(q.x>Wd-20){ ledger.push(1); if(ledger.length>14) ledger.shift(); ps[p]=spawn(false); continue; }
+      } else if(q.state==='bounce'){
+        q.x+=q.vx; q.y+=q.vy; q.t++; if(q.t>60){ q.state='flow'; q.vx=0.5+Math.random()*0.9; q.vy=(Math.random()-0.5)*0.25; q.ticket=Math.random()<0.16; }
+      }
+      if(q.x<-20) ps[p]=spawn(false);
+      // draw
+      c.beginPath(); c.arc(q.x,q.y,q.r,0,Math.PI*2);
+      c.fillStyle = q.state==='pass' ? '#F6E3E1' : (q.ticket ? '#E25A50' : '#D2CFC9'); c.globalAlpha = q.state==='bounce'?0.55:0.9; c.fill(); c.globalAlpha=1;
+      if(q.ticket && q.state!=='pass'){ c.beginPath(); c.arc(q.x,q.y,q.r+3,0,Math.PI*2); c.strokeStyle='rgba(226,90,80,0.5)'; c.lineWidth=1; c.stroke(); }
+    }
+    // ledger entries
+    for(var l=0;l<ledger.length;l++){ c.fillStyle='#E8A59E'; c.fillRect(wallX+14+l*10,Hd-34,6,6); }
+    if(!reduce) requestAnimationFrame(draw);
+  }
+  var ledger=[1,1,1,1,1];
+  draw(); if(reduce){ for(var k=0;k<400;k++){} }
+  // copy
+  var btn=document.getElementById('copybtn');
+  btn.addEventListener('click',function(){
+    var txt=document.getElementById('mail').textContent;
+    function sel(){ var r=document.createRange(); r.selectNodeContents(document.getElementById('mail')); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent='Select and copy'; }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(function(){ btn.textContent='Copied'; setTimeout(function(){btn.textContent='Copy address';},1800); }, sel); } else sel();
+  });
+  document.getElementById('f').addEventListener('submit',function(e){ e.preventDefault(); var n=document.getElementById('f-name').value.trim(), m=document.getElementById('f-email').value.trim(); var ok=n.length>0 && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m); document.getElementById('f-err').hidden=ok; document.getElementById('f-ok').hidden=!ok; });
+})();
+</script>
+</body>
+</html>
