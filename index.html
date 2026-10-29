@@ -186,6 +186,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 @media (max-width:760px){.spec{grid-template-columns:1fr}.rules{columns:1}}
 @media (prefers-reduced-motion:reduce){.btn{transition:none}}
 </style>
+<!-- Analytics: Cloudflare Web Analytics (free, no cookies). Paste the beacon line Cloudflare gives you here, e.g.
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "YOUR_TOKEN"}'></script> -->
 </head>
 <body>
 
@@ -340,7 +342,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
       <label>Your role<input id="f-role" type="text" autocomplete="organization-title" placeholder="CEO, CTO, head of R&amp;D, operations…"></label>
       <label>Phone<input id="f-phone" type="tel" autocomplete="tel"></label>
       <label>How can we help?<textarea id="f-msg" placeholder="A few lines about your situation is enough."></textarea></label>
-      <button class="btn btn-red" type="submit">Send</button>
+      <input type="checkbox" id="f-bot" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
+      <button class="btn btn-red" type="submit" id="f-send">Send</button>
       <p class="ok" id="f-ok" hidden>Thank you. We will reply within two working days.</p>
       <p class="ok" id="f-err" hidden style="color:var(--red-soft)">Please add your name and a valid email address.</p>
     </form>
@@ -408,7 +411,34 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     function sel(){ var r=document.createRange(); r.selectNodeContents(document.getElementById('mail')); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent='Select and copy'; }
     if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(function(){ btn.textContent='Copied'; setTimeout(function(){btn.textContent='Copy address';},1800); }, sel); } else sel();
   });
-  document.getElementById('f').addEventListener('submit',function(e){ e.preventDefault(); var n=document.getElementById('f-name').value.trim(), m=document.getElementById('f-email').value.trim(); var ok=n.length>0 && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m); document.getElementById('f-err').hidden=ok; document.getElementById('f-ok').hidden=!ok; });
+  // Contact form. With a Web3Forms access key it posts to Web3Forms, which emails info@botformed.com.
+  // Without a key (or if the service is down) it opens the visitor's email app with the message filled in,
+  // so no enquiry is ever silently lost.
+  var WEB3FORMS_KEY = '';
+  var TO = 'info@botformed.com';
+  var form=document.getElementById('f'), okEl=document.getElementById('f-ok'), errEl=document.getElementById('f-err'), sendBtn=document.getElementById('f-send');
+  function v(id){ return document.getElementById(id).value.trim(); }
+  function show(el,msg){ okEl.hidden=true; errEl.hidden=true; if(el){ if(msg) el.textContent=msg; el.hidden=false; } }
+  function viaMail(d){
+    var body='Name: '+d.name+'\nEmail: '+d.email+'\nCompany: '+d.company+'\nRole: '+d.role+'\nPhone: '+d.phone+'\n\n'+d.message;
+    window.location.href='mailto:'+TO+'?subject='+encodeURIComponent('Website enquiry from '+d.name)+'&body='+encodeURIComponent(body);
+    show(okEl,'Your email app should open with the message ready. Press Send there, or write to '+TO+'.');
+  }
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var d={name:v('f-name'), email:v('f-email'), company:v('f-co'), role:v('f-role'), phone:v('f-phone'), message:v('f-msg')};
+    if(!(d.name.length>0 && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email))){ show(errEl,'Please add your name and a valid email address.'); return; }
+    if(document.getElementById('f-bot').checked) return;
+    if(!WEB3FORMS_KEY){ viaMail(d); return; }
+    sendBtn.disabled=true; sendBtn.textContent='Sending…';
+    var payload={access_key:WEB3FORMS_KEY, subject:'Website enquiry from '+d.name, from_name:'botformed.com', botcheck:false,
+      name:d.name, email:d.email, company:d.company, role:d.role, phone:d.phone, message:d.message};
+    fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)})
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if(j&&j.success){ form.reset(); show(okEl,'Thank you. We will reply within two working days.'); } else { viaMail(d); } })
+      .catch(function(){ viaMail(d); })
+      .then(function(){ sendBtn.disabled=false; sendBtn.textContent='Send'; });
+  });
 })();
 </script>
 </body>
